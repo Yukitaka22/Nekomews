@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nekomews（ねこみゅーず） — 猫と、もっと近く</title>
+<meta name="description" content="猫の飼い主とシッターをつなぐマッチングアプリ。SNS・カレンダー・里親まで、猫の一生に寄り添います。事前登録受付中。">
+<meta name="theme-color" content="#F59E0B">
+<meta property="og:title" content="Nekomews — 猫と、もっと近く">
+<meta property="og:description" content="猫の飼い主とシッターをつなぐマッチングアプリ。事前登録受付中。">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ja_JP">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐾</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amber: #F59E0B;
+    --amber-dark: #D97706;
+    --coral: #FB923C;
+    --cream: #FFFBF5;
+    --ink: #1F2937;
+    --whisker: #6B7280;
+    --fur: #E5E7EB;
+    --snow: #FFFFFF;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: var(--cream);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .logo-font { font-family: "Poppins", sans-serif; }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #FFFBF5 0%, #FFF3E0 50%, #FFE4C4 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "🐾";
+    position: absolute;
+    font-size: 240px;
+    top: -40px;
+    right: -40px;
+    opacity: 0.05;
+    transform: rotate(-20deg);
+  }
+  .hero::after {
+    content: "🐾";
+    position: absolute;
+    font-size: 180px;
+    bottom: -20px;
+    left: -30px;
+    opacity: 0.05;
+    transform: rotate(30deg);
+  }
+  .badge {
+    display: inline-block;
+    padding: 6px 16px;
+    background: var(--snow);
+    color: var(--amber-dark);
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.15);
+    position: relative;
+    z-index: 1;
+  }
+  .brand {
+    font-family: "Poppins", sans-serif;
+    font-size: clamp(48px, 10vw, 88px);
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .brand-sub {
+    font-size: clamp(16px, 3vw, 20px);
+    color: var(--whisker);
+    margin-bottom: 32px;
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-headline {
+    font-size: clamp(24px, 5vw, 40px);
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-headline .accent { color: var(--amber-dark); }
+  .hero-desc {
+    font-size: clamp(14px, 2vw, 17px);
+    color: var(--whisker);
+    max-width: 560px;
+    margin: 0 auto 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-form {
+    max-width: 440px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .cta-form-row {
+    display: flex;
+    gap: 8px;
+    background: var(--snow);
+    border-radius: 16px;
+    padding: 6px;
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
+  }
+  .cta-form input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 14px 16px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--ink);
+    background: transparent;
+  }
+  .cta-form button {
+    background: var(--amber);
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .cta-form button:hover {
+    background: var(--amber-dark);
+    transform: translateY(-1px);
+  }
+  .cta-form button:active { transform: scale(0.96); }
+  .cta-note {
+    font-size: 12px;
+    color: var(--whisker);
+    margin-top: 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 20px;
+    animation: bounce 2s infinite;
+    z-index: 1;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-8px); }
+  }
+
+  /* Features */
+  .features {
+    padding: 96px 24px;
+    background: var(--snow);
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  .section-title {
+    text-align: center;
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .section-sub {
+    text-align: center;
+    color: var(--whisker);
+    margin-bottom: 56px;
+  }
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 32px 24px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(245, 158, 11, 0.1);
+  }
+  .feature-icon { font-size: 40px; margin-bottom: 16px; }
+  .feature-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .feature-desc { color: var(--whisker); font-size: 14px; line-height: 1.8; }
+
+  /* How it works */
+  .how {
+    padding: 96px 24px;
+    background: linear-gradient(180deg, var(--snow) 0%, #FFF8EF 100%);
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .step { text-align: center; }
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--amber);
+    color: white;
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+  .step-title { font-weight: 700; margin-bottom: 8px; }
+  .step-desc { font-size: 14px; color: var(--whisker); }
+
+  /* Social Good */
+  .social-good {
+    padding: 96px 24px;
+    background: var(--snow);
+    text-align: center;
+  }
+  .social-good-emoji { font-size: 64px; margin-bottom: 16px; }
+  .social-good p {
+    max-width: 640px;
+    margin: 16px auto 0;
+    color: var(--whisker);
+  }
+
+  /* CTA Section (bottom) */
+  .cta-bottom {
+    padding: 96px 24px;
+    background: linear-gradient(135deg, var(--amber) 0%, var(--coral) 100%);
+    text-align: center;
+    color: white;
+  }
+  .cta-bottom h2 { font-size: clamp(24px, 4vw, 32px); margin-bottom: 16px; }
+  .cta-bottom p { opacity: 0.95; margin-bottom: 40px; }
+  .cta-bottom .cta-form input { color: var(--ink); }
+
+  /* Footer */
+  footer {
+    padding: 48px 24px;
+    background: var(--ink);
+    color: #9CA3AF;
+    text-align: center;
+    font-size: 13px;
+  }
+  footer a { color: #D1D5DB; text-decoration: none; margin: 0 12px; }
+  footer a:hover { color: white; }
+  .footer-brand {
+    font-family: "Poppins", sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: white;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .footer-links { margin-bottom: 24px; }
+  .copyright { opacity: 0.6; }
+
+  @media (max-width: 540px) {
+    .cta-form-row { flex-direction: column; padding: 8px; }
+    .cta-form button { width: 100%; padding: 16px; }
+    .hero { padding: 24px 20px; }
+    .features, .how, .social-good, .cta-bottom { padding: 64px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<section class="hero">
+  <span class="badge">🐾 2026年秋 リリース予定</span>
+  <h1 class="brand">nekomews</h1>
+  <div class="brand-sub">猫と、もっと近く。</div>
+  <h2 class="hero-headline">
+    <span class="accent">信頼できるシッター</span>と、<br>
+    猫との暮らし全部を、ひとつに。
+  </h2>
+  <p class="hero-desc">
+    猫の飼い主とシッターをつなぐマッチングアプリ。<br>
+    成長記録・コミュニティ・保護猫の里親まで、猫の一生に寄り添います。
+  </p>
+
+  <form class="cta-form" onsubmit="return false;" id="waitlistForm">
+    <div class="cta-form-row">
+      <input type="email" placeholder="メールアドレス" required id="emailInput">
+      <button type="submit">事前登録する</button>
+    </div>
+    <p class="cta-note">※ 配信はリリース情報のみ。いつでも停止できます。</p>
+  </form>
+
+  <div class="scroll-hint">↓</div>
+</section>
+
+<!-- Features -->
+<section class="features">
+  <div class="container">
+    <h2 class="section-title">猫のための、全部がある</h2>
+    <p class="section-sub">マッチングだけじゃない、猫との暮らしを豊かにする機能たち。</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🤝</div>
+        <h3 class="feature-title">シッターマッチング</h3>
+        <p class="feature-desc">
+          近所の信頼できるシッターをすぐに見つけて依頼。レビューと料金が一目で分かります。
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📸</div>
+        <h3 class="feature-title">ねこ日記</h3>
+        <p class="feature-desc">
+          うちの子の写真と成長を記録。自分用にもコミュニティに共有も、どちらも思うままに。
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📅</div>
+        <h3 class="feature-title">自動カレンダー</h3>
+        <p class="feature-desc">
+          餌の買い物・猫砂交換・ワクチン時期を自動でお知らせ。うっかり忘れもゼロに。
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💬</div>
+        <h3 class="feature-title">お世話報告チャット</h3>
+        <p class="feature-desc">
+          預けている間も、シッターから写真付きの報告が届きます。肉球ボタンでスタンプも。
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏡</div>
+        <h3 class="feature-title">里親マッチング</h3>
+        <p class="feature-desc">
+          保護団体と連携。信頼できる里親との出会いを、アプリから直接見つけられます。
+        </p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <h3 class="feature-title">もしもの保険</h3>
+        <p class="feature-desc">
+          予約ごとに保険を自動付帯。大切な家族を預けるときの不安を、少しだけ軽くします。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="how">
+  <div class="container">
+    <h2 class="section-title">使い方はかんたん</h2>
+    <p class="section-sub">3ステップで、信頼できるシッターと出会えます。</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">うちの子を登録</div>
+        <p class="step-desc">名前・性格・好みをプロフィールに。何頭でも大丈夫です。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">シッターを探す</div>
+        <p class="step-desc">エリア・日程でぴったりの人をすぐ見つけられます。</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">予約して、お任せ</div>
+        <p class="step-desc">チャットで打ち合わせ。お世話報告をもらいながら安心して任せられます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Social good -->
+<section class="social-good">
+  <div class="container">
+    <div class="social-good-emoji">💛</div>
+    <h2 class="section-title">一匹でも多くの猫のために</h2>
+    <p>
+      Nekomews は、利用するたびに保護団体への寄付につながる仕組みを用意しています。
+      あなたが猫と暮らすことが、別のどこかの猫の幸せにもつながります。
+    </p>
+  </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="cta-bottom">
+  <h2>リリース情報を、先に受け取りませんか？</h2>
+  <p>事前登録していただいた方には、正式リリース前に優先してお知らせします。</p>
+
+  <form class="cta-form" onsubmit="return false;" id="waitlistForm2">
+    <div class="cta-form-row">
+      <input type="email" placeholder="メールアドレス" required>
+      <button type="submit">事前登録する</button>
+    </div>
+  </form>
+</section>
+
+<footer>
+  <span class="footer-brand">nekomews</span>
+  <div class="footer-links">
+    <a href="#">利用規約（準備中）</a>
+    <a href="#">プライバシーポリシー（準備中）</a>
+    <a href="mailto:hello@nekomews.jp">お問い合わせ</a>
+  </div>
+  <div class="copyright">© 2026 Nekomews. 猫と、もっと近く。</div>
+</footer>
+
+<script>
+  // シンプルな送信ハンドラ（MVPではFormspreeやSupabaseに差し替え）
+  document.querySelectorAll("form").forEach(form => {
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const input = form.querySelector("input[type=email]");
+      const email = input.value.trim();
+      if (!email || !email.includes("@")) {
+        alert("メールアドレスをご確認ください");
+        return;
+      }
+      // 仮：localStorage に保存（後でバックエンド連携）
+      const list = JSON.parse(localStorage.getItem("nekomews_waitlist") || "[]");
+      if (!list.includes(email)) list.push(email);
+      localStorage.setItem("nekomews_waitlist", JSON.stringify(list));
+      input.value = "";
+      alert("ご登録ありがとうございます🐾\nリリース情報を楽しみにお待ちください。");
+    });
+  });
+</script>
+
+</body>
+</html>

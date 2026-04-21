@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Expo
+.expo/
+dist/
+web-build/
+*.orig.*
+expo-env.d.ts
+
+# iOS
+ios/Pods/
+ios/build/
+ios/*.xcworkspace/xcuserdata/
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/app/release/
+*.keystore
+!debug.keystore
+
+# Native
+*.hprof
+.build/
+
+# Debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+.vscode/
+.idea/
+
+# Supabase
+supabase/.branches
+supabase/.temp
+supabase/.env
+
+# Test
+coverage/
+.vitest/
+
+# Artifacts from AI agents
+artifacts/
+
+# Build outputs
+*.log
+*.pid

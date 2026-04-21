@@ -1,0 +1,35 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./app/*"],
+      "@components/*": ["./app/components/*"],
+      "@lib/*": ["./app/lib/*"],
+      "@hooks/*": ["./app/hooks/*"],
+      "@types/*": ["./app/types/*"],
+      "@utils/*": ["./app/utils/*"],
+      "@constants/*": ["./app/constants/*"]
+    },
+    "types": ["expo"]
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "ios",
+    "android",
+    "dist",
+    ".expo",
+    "supabase/functions"
+  ]
+}
