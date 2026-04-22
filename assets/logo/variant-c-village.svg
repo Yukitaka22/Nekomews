@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Nekomews Logo - Variant C: 街と隠れ猫
+  夕暮れの街並みから猫たちがひょこっと顔を出す世界観
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 280" width="480" height="280">
+  <defs>
+    <linearGradient id="sunsetGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FCD786"/>
+      <stop offset="100%" stop-color="#FB923C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Symbol: village skyline -->
+  <g transform="translate(40, 20)">
+    <!-- House 1 (left, small) -->
+    <path d="M 0 100 L 0 50 L 30 20 L 60 50 L 60 100 Z" fill="url(#sunsetGradient)"/>
+    <rect x="22" y="65" width="14" height="20" fill="#FFFBF5" opacity="0.85"/>
+    <!-- cat tail peeking from chimney -->
+    <path d="M 20 22 Q 18 12 24 10" stroke="#1F2937" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+
+    <!-- House 2 (center, tall) -->
+    <path d="M 55 100 L 55 40 L 95 5 L 135 40 L 135 100 Z" fill="#F59E0B"/>
+    <rect x="80" y="55" width="30" height="30" fill="#FFFBF5" opacity="0.9"/>
+    <!-- cat face in window -->
+    <g transform="translate(88, 60)">
+      <path d="M 2 4 L 5 0 L 8 4 Z" fill="#1F2937"/>
+      <path d="M 16 4 L 13 0 L 10 4 Z" fill="#1F2937"/>
+      <ellipse cx="9" cy="10" rx="7" ry="6" fill="#1F2937"/>
+      <circle cx="6" cy="9" r="1" fill="#FFFBF5"/>
+      <circle cx="12" cy="9" r="1" fill="#FFFBF5"/>
+    </g>
+
+    <!-- House 3 (right, medium) -->
+    <path d="M 130 100 L 130 55 L 160 25 L 190 55 L 190 100 Z" fill="url(#sunsetGradient)"/>
+    <rect x="148" y="70" width="24" height="18" fill="#FFFBF5" opacity="0.85"/>
+
+    <!-- Small cat silhouette in the alley between houses 2 and 3 -->
+    <g transform="translate(127, 82)">
+      <ellipse cx="3" cy="9" rx="4" ry="6" fill="#1F2937"/>
+      <path d="M 1 2 L 3 0 L 5 2 Z" fill="#1F2937"/>
+      <path d="M 5 2 L 7 0 L 9 2 Z" fill="#1F2937"/>
+      <path d="M 8 14 Q 13 13 11 8" stroke="#1F2937" stroke-width="1.5" fill="none"/>
+    </g>
+
+    <!-- Ground line -->
+    <line x1="-10" y1="100" x2="200" y2="100" stroke="#1F2937" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Wordmark below -->
+  <text x="240" y="180"
+        font-family="'Poppins', sans-serif"
+        font-size="44"
+        font-weight="700"
+        fill="#1F2937"
+        letter-spacing="-0.02em"
+        text-anchor="middle">
+    nekomews
+  </text>
+  <text x="240" y="220"
+        font-family="'Noto Sans JP', sans-serif"
+        font-size="14"
+        font-weight="400"
+        fill="#6B7280"
+        letter-spacing="0.1em"
+        text-anchor="middle">
+    猫と、もっと近く
+  </text>
+</svg>

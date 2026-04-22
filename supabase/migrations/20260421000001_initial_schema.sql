@@ -1,20 +1,19 @@
 -- ================================================================
--- Nekomews 初期スキーマ
--- Version: v0.1
+-- Nekomews 初期スキーマ（冪等版）
+-- Version: v0.2
 -- Date: 2026-04-21
+-- 何度実行してもOK
 -- ================================================================
 
--- 拡張機能を有効化
+-- 拡張機能
 create extension if not exists "pgcrypto" with schema "extensions";
 create extension if not exists "uuid-ossp" with schema "extensions";
 
 -- ================================================================
--- 共通: updated_at 自動更新トリガー関数
+-- 関数：updated_at 自動更新
 -- ================================================================
 create or replace function public.set_updated_at()
-returns trigger
-language plpgsql
-as $$
+returns trigger language plpgsql as $$
 begin
   new.updated_at = now();
   return new;
@@ -22,7 +21,20 @@ end;
 $$;
 
 -- ================================================================
--- users（public schema、Supabase auth.users の拡張）
+-- 関数：auth.users 作成時に public.users を自動生成
+-- ================================================================
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  insert into public.users (id, email, display_name)
+  values (new.id, new.email, split_part(new.email, '@', 1))
+  on conflict (id) do nothing;
+  return new;
+end;
+$$;
+
+-- ================================================================
+-- users
 -- ================================================================
 create table if not exists public.users (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -45,40 +57,23 @@ create table if not exists public.users (
   updated_at timestamptz not null default now()
 );
 
+drop trigger if exists set_users_updated_at on public.users;
 create trigger set_users_updated_at
   before update on public.users
   for each row execute function public.set_updated_at();
 
-alter table public.users enable row level security;
-
-create policy "users_self_read"
-  on public.users for select
-  using (auth.uid() = id);
-
-create policy "users_self_update"
-  on public.users for update
-  using (auth.uid() = id);
-
-create policy "users_sitter_public_read"
-  on public.users for select
-  using (role_sitter = true);
-
--- auth.users 作成時に public.users を自動生成
-create or replace function public.handle_new_user()
-returns trigger
-language plpgsql
-security definer set search_path = public
-as $$
-begin
-  insert into public.users (id, email, display_name)
-  values (new.id, new.email, split_part(new.email, '@', 1));
-  return new;
-end;
-$$;
-
+drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+alter table public.users enable row level security;
+drop policy if exists "users_self_read" on public.users;
+create policy "users_self_read" on public.users for select using (auth.uid() = id);
+drop policy if exists "users_self_update" on public.users;
+create policy "users_self_update" on public.users for update using (auth.uid() = id);
+drop policy if exists "users_sitter_public_read" on public.users;
+create policy "users_sitter_public_read" on public.users for select using (role_sitter = true);
 
 -- ================================================================
 -- cats
@@ -100,18 +95,16 @@ create table if not exists public.cats (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists cats_owner_id_idx
-  on public.cats(owner_id) where deleted_at is null;
+create index if not exists cats_owner_id_idx on public.cats(owner_id) where deleted_at is null;
 
+drop trigger if exists set_cats_updated_at on public.cats;
 create trigger set_cats_updated_at
   before update on public.cats
   for each row execute function public.set_updated_at();
 
 alter table public.cats enable row level security;
-
-create policy "cats_owner_all"
-  on public.cats for all
-  using (auth.uid() = owner_id);
+drop policy if exists "cats_owner_all" on public.cats;
+create policy "cats_owner_all" on public.cats for all using (auth.uid() = owner_id);
 
 -- ================================================================
 -- sitter_profiles
@@ -134,22 +127,18 @@ create table if not exists public.sitter_profiles (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists sitter_profiles_status_idx
-  on public.sitter_profiles(acceptance_status);
+create index if not exists sitter_profiles_status_idx on public.sitter_profiles(acceptance_status);
 
+drop trigger if exists set_sitter_profiles_updated_at on public.sitter_profiles;
 create trigger set_sitter_profiles_updated_at
   before update on public.sitter_profiles
   for each row execute function public.set_updated_at();
 
 alter table public.sitter_profiles enable row level security;
-
-create policy "sitter_self_all"
-  on public.sitter_profiles for all
-  using (auth.uid() = user_id);
-
-create policy "sitter_active_public_read"
-  on public.sitter_profiles for select
-  using (acceptance_status = 'active');
+drop policy if exists "sitter_self_all" on public.sitter_profiles;
+create policy "sitter_self_all" on public.sitter_profiles for all using (auth.uid() = user_id);
+drop policy if exists "sitter_active_public_read" on public.sitter_profiles;
+create policy "sitter_active_public_read" on public.sitter_profiles for select using (acceptance_status = 'active');
 
 -- ================================================================
 -- bookings
@@ -169,10 +158,7 @@ create table if not exists public.bookings (
   total_amount int not null default 0,
   notes text,
   status text not null default 'requested'
-    check (status in (
-      'requested', 'accepted', 'confirmed', 'completed',
-      'cancelled', 'declined', 'disputed'
-    )),
+    check (status in ('requested', 'accepted', 'confirmed', 'completed', 'cancelled', 'declined', 'disputed')),
   stripe_payment_intent_id text,
   cancellation_reason text,
   cancelled_by uuid references public.users(id),
@@ -183,27 +169,18 @@ create table if not exists public.bookings (
   check (end_at > start_at)
 );
 
-create index if not exists bookings_owner_idx
-  on public.bookings(owner_id, status, start_at desc);
+create index if not exists bookings_owner_idx on public.bookings(owner_id, status, start_at desc);
+create index if not exists bookings_sitter_idx on public.bookings(sitter_id, status, start_at desc);
+create index if not exists bookings_active_idx on public.bookings(status, start_at) where status in ('accepted', 'confirmed');
 
-create index if not exists bookings_sitter_idx
-  on public.bookings(sitter_id, status, start_at desc);
-
-create index if not exists bookings_active_idx
-  on public.bookings(status, start_at)
-  where status in ('accepted', 'confirmed');
-
+drop trigger if exists set_bookings_updated_at on public.bookings;
 create trigger set_bookings_updated_at
   before update on public.bookings
   for each row execute function public.set_updated_at();
 
 alter table public.bookings enable row level security;
-
-create policy "bookings_related_read"
-  on public.bookings for select
-  using (auth.uid() in (owner_id, sitter_id));
-
--- INSERT/UPDATE は Edge Function 経由で service_role が実行
+drop policy if exists "bookings_related_read" on public.bookings;
+create policy "bookings_related_read" on public.bookings for select using (auth.uid() in (owner_id, sitter_id));
 
 -- ================================================================
 -- messages
@@ -218,32 +195,22 @@ create table if not exists public.messages (
   created_at timestamptz not null default now()
 );
 
-create index if not exists messages_booking_idx
-  on public.messages(booking_id, created_at desc);
+create index if not exists messages_booking_idx on public.messages(booking_id, created_at desc);
 
 alter table public.messages enable row level security;
-
-create policy "messages_related_read"
-  on public.messages for select
-  using (
-    exists (
-      select 1 from public.bookings b
-      where b.id = messages.booking_id
-        and auth.uid() in (b.owner_id, b.sitter_id)
-    )
-  );
-
-create policy "messages_related_insert"
-  on public.messages for insert
-  with check (
-    sender_id = auth.uid()
-    and exists (
-      select 1 from public.bookings b
-      where b.id = messages.booking_id
-        and auth.uid() in (b.owner_id, b.sitter_id)
-        and b.status in ('accepted', 'confirmed', 'completed')
-    )
-  );
+drop policy if exists "messages_related_read" on public.messages;
+create policy "messages_related_read" on public.messages for select using (
+  exists (select 1 from public.bookings b where b.id = messages.booking_id and auth.uid() in (b.owner_id, b.sitter_id))
+);
+drop policy if exists "messages_related_insert" on public.messages;
+create policy "messages_related_insert" on public.messages for insert with check (
+  sender_id = auth.uid() and exists (
+    select 1 from public.bookings b
+    where b.id = messages.booking_id
+      and auth.uid() in (b.owner_id, b.sitter_id)
+      and b.status in ('accepted', 'confirmed', 'completed')
+  )
+);
 
 -- ================================================================
 -- reviews
@@ -263,19 +230,13 @@ create table if not exists public.reviews (
   unique(booking_id, direction)
 );
 
-create index if not exists reviews_reviewee_idx
-  on public.reviews(reviewee_id, published_at desc)
-  where published_at is not null;
+create index if not exists reviews_reviewee_idx on public.reviews(reviewee_id, published_at desc) where published_at is not null;
 
 alter table public.reviews enable row level security;
-
-create policy "reviews_public_read"
-  on public.reviews for select
-  using (published_at is not null);
-
-create policy "reviews_self_read"
-  on public.reviews for select
-  using (auth.uid() in (reviewer_id, reviewee_id));
+drop policy if exists "reviews_public_read" on public.reviews;
+create policy "reviews_public_read" on public.reviews for select using (published_at is not null);
+drop policy if exists "reviews_self_read" on public.reviews;
+create policy "reviews_self_read" on public.reviews for select using (auth.uid() in (reviewer_id, reviewee_id));
 
 -- ================================================================
 -- journal_posts
@@ -286,8 +247,7 @@ create table if not exists public.journal_posts (
   cat_id uuid references public.cats(id),
   text text,
   photos text[] not null default '{}',
-  visibility text not null default 'public'
-    check (visibility in ('private', 'followers', 'public')),
+  visibility text not null default 'public' check (visibility in ('private', 'followers', 'public')),
   like_count int not null default 0,
   comment_count int not null default 0,
   deleted_at timestamptz,
@@ -295,42 +255,29 @@ create table if not exists public.journal_posts (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists journal_author_idx
-  on public.journal_posts(author_id, created_at desc)
-  where deleted_at is null;
+create index if not exists journal_author_idx on public.journal_posts(author_id, created_at desc) where deleted_at is null;
+create index if not exists journal_public_idx on public.journal_posts(visibility, created_at desc) where visibility = 'public' and deleted_at is null;
 
-create index if not exists journal_public_idx
-  on public.journal_posts(visibility, created_at desc)
-  where visibility = 'public' and deleted_at is null;
-
+drop trigger if exists set_journal_posts_updated_at on public.journal_posts;
 create trigger set_journal_posts_updated_at
   before update on public.journal_posts
   for each row execute function public.set_updated_at();
 
 alter table public.journal_posts enable row level security;
-
-create policy "journal_public_read"
-  on public.journal_posts for select
-  using (
-    deleted_at is null and (
-      visibility = 'public'
-      or author_id = auth.uid()
-    )
-  );
-
-create policy "journal_self_write"
-  on public.journal_posts for all
-  using (author_id = auth.uid());
+drop policy if exists "journal_public_read" on public.journal_posts;
+create policy "journal_public_read" on public.journal_posts for select using (
+  deleted_at is null and (visibility = 'public' or author_id = auth.uid())
+);
+drop policy if exists "journal_self_write" on public.journal_posts;
+create policy "journal_self_write" on public.journal_posts for all using (author_id = auth.uid());
 
 -- ================================================================
--- schedules (自動スケジュール + 手動予定)
+-- schedules
 -- ================================================================
 create table if not exists public.schedules (
   id uuid primary key default gen_random_uuid(),
   cat_id uuid not null references public.cats(id) on delete cascade,
-  type text not null check (type in (
-    'food_purchase', 'litter_change', 'vaccine', 'filaria', 'custom'
-  )),
+  type text not null check (type in ('food_purchase', 'litter_change', 'vaccine', 'filaria', 'custom')),
   scheduled_at timestamptz not null,
   is_auto_generated boolean not null default false,
   completed_at timestamptz,
@@ -339,23 +286,18 @@ create table if not exists public.schedules (
   updated_at timestamptz not null default now()
 );
 
-create index if not exists schedules_cat_idx
-  on public.schedules(cat_id, scheduled_at);
+create index if not exists schedules_cat_idx on public.schedules(cat_id, scheduled_at);
 
+drop trigger if exists set_schedules_updated_at on public.schedules;
 create trigger set_schedules_updated_at
   before update on public.schedules
   for each row execute function public.set_updated_at();
 
 alter table public.schedules enable row level security;
-
-create policy "schedules_owner_all"
-  on public.schedules for all
-  using (
-    exists (
-      select 1 from public.cats c
-      where c.id = schedules.cat_id and c.owner_id = auth.uid()
-    )
-  );
+drop policy if exists "schedules_owner_all" on public.schedules;
+create policy "schedules_owner_all" on public.schedules for all using (
+  exists (select 1 from public.cats c where c.id = schedules.cat_id and c.owner_id = auth.uid())
+);
 
 -- ================================================================
 -- 完了

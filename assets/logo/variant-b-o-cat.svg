@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Nekomews Logo - Variant B: "o" が猫の顔のワードマーク
+  和モダン・書道風の柔らかさ
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 140" width="560" height="140">
+  <!-- ワードマーク全体：nekomews -->
+  <!-- 手書き/書道風の印象を出すため、個別字形を微妙にずらす -->
+  <g font-family="'Poppins', 'Hiragino Mincho ProN', serif"
+     font-weight="600"
+     font-size="88"
+     fill="#1F2937"
+     letter-spacing="-0.02em">
+
+    <!-- n -->
+    <text x="20" y="100">n</text>
+    <!-- e -->
+    <text x="78" y="100">e</text>
+    <!-- k -->
+    <text x="136" y="100">k</text>
+
+    <!-- "o" part replaced by cat face -->
+    <g transform="translate(230, 42)">
+      <!-- Face circle (the 'o' body) -->
+      <circle cx="36" cy="38" r="32" fill="none" stroke="#F59E0B" stroke-width="6"/>
+      <!-- Ear left -->
+      <path d="M 14 22 L 20 4 L 28 20 Z" fill="#F59E0B"/>
+      <!-- Ear right -->
+      <path d="M 58 22 L 52 4 L 44 20 Z" fill="#F59E0B"/>
+      <!-- Eyes (tiny) -->
+      <circle cx="26" cy="38" r="2.5" fill="#1F2937"/>
+      <circle cx="46" cy="38" r="2.5" fill="#1F2937"/>
+      <!-- Nose (tiny) -->
+      <path d="M 33 46 L 39 46 L 36 50 Z" fill="#FB923C"/>
+    </g>
+
+    <!-- m -->
+    <text x="316" y="100">m</text>
+    <!-- e -->
+    <text x="404" y="100">e</text>
+    <!-- w -->
+    <text x="462" y="100">w</text>
+    <!-- s -->
+    <text x="526" y="100">s</text>
+  </g>
+</svg>

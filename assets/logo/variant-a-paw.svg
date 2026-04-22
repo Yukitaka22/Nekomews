@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Nekomews Logo - Variant A: 肉球 + ワードマーク
+  アンバーグラデーションの肉球シンボル + 小文字サンセリフのワードマーク
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
+  <defs>
+    <linearGradient id="pawGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#FB923C"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Paw symbol -->
+  <g transform="translate(20, 20)">
+    <!-- Top-left toe -->
+    <ellipse cx="18" cy="22" rx="10" ry="13" fill="url(#pawGradient)"/>
+    <!-- Top-right toe -->
+    <ellipse cx="62" cy="22" rx="10" ry="13" fill="url(#pawGradient)"/>
+    <!-- Middle-left toe -->
+    <ellipse cx="4" cy="48" rx="9" ry="12" fill="url(#pawGradient)"/>
+    <!-- Middle-right toe -->
+    <ellipse cx="76" cy="48" rx="9" ry="12" fill="url(#pawGradient)"/>
+    <!-- Palm pad -->
+    <path d="M 20 78
+             Q 20 50, 40 50
+             Q 60 50, 60 78
+             Q 60 94, 40 94
+             Q 20 94, 20 78 Z" fill="url(#pawGradient)"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="140" y="80"
+        font-family="'Poppins', 'Helvetica Neue', sans-serif"
+        font-size="54"
+        font-weight="600"
+        fill="#1F2937"
+        letter-spacing="-0.02em">
+    nekomews
+  </text>
+</svg>
