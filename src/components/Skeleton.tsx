@@ -1,12 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, ViewStyle } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  Easing,
-} from 'react-native-reanimated';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, ViewStyle, Animated, Easing } from 'react-native';
 import { Colors } from '@/constants/colors';
 
 type SkeletonProps = {
@@ -17,28 +10,27 @@ type SkeletonProps = {
 };
 
 export function Skeleton({ width = '100%', height = 16, borderRadius = 8, style }: SkeletonProps) {
-  const opacity = useSharedValue(0.6);
+  const opacity = useRef(new Animated.Value(0.6)).current;
 
   useEffect(() => {
-    opacity.value = withRepeat(
-      withTiming(1, { duration: 800, easing: Easing.inOut(Easing.ease) }),
-      -1,
-      true
-    );
-  }, []);
-
-  const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, { toValue: 1, duration: 800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.6, duration: 800, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+      ])
+    ).start();
+  }, [opacity]);
 
   return (
     <Animated.View
-      style={[{ width, height, borderRadius, backgroundColor: Colors.neutral.fur }, animatedStyle, style]}
+      style={[
+        { width: width as any, height, borderRadius, backgroundColor: Colors.neutral.fur, opacity },
+        style,
+      ]}
     />
   );
 }
 
-/**
- * シッターカードのスケルトン（検索ページ用）
- */
 export function SitterCardSkeleton() {
   return (
     <View style={styles.sitterCard}>

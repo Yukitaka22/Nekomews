@@ -4,16 +4,15 @@
     "slug": "nekomews",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "nekomews",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFBF5"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "jp.nekomews.app",
@@ -25,10 +24,6 @@
       }
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#FFFBF5"
-      },
       "package": "jp.nekomews.app",
       "versionCode": 1,
       "permissions": [
@@ -41,39 +36,16 @@
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "output": "static"
     },
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-image-picker",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/images/notification-icon.png",
-          "color": "#F59E0B"
-        }
-      ],
-      [
-        "expo-font",
-        {
-          "fonts": [
-            "./assets/fonts/NotoSansJP-Regular.ttf",
-            "./assets/fonts/NotoSansJP-Medium.ttf",
-            "./assets/fonts/NotoSansJP-Bold.ttf"
-          ]
-        }
-      ]
+      "expo-font",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true
-    },
-    "extra": {
-      "eas": {
-        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
-      }
-    },
-    "owner": "REPLACE_WITH_EAS_USERNAME"
+    }
   }
 }

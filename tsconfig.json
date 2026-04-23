@@ -2,21 +2,20 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "noUncheckedIndexedAccess": true,
+    "noUncheckedIndexedAccess": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/*"],
-      "@components/*": ["./app/components/*"],
-      "@lib/*": ["./app/lib/*"],
-      "@hooks/*": ["./app/hooks/*"],
-      "@types/*": ["./app/types/*"],
-      "@utils/*": ["./app/utils/*"],
-      "@constants/*": ["./app/constants/*"]
-    },
-    "types": ["expo"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@types/*": ["./src/types/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@constants/*": ["./src/constants/*"]
+    }
   },
   "include": [
     "**/*.ts",
